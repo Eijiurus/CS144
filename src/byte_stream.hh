@@ -2,7 +2,9 @@
 
 #include <cstdint>
 #include <string>
+#include <iostream>
 #include <string_view>
+#include <queue>
 
 class Reader;
 class Writer;
@@ -23,8 +25,12 @@ public:
 
 protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
-  uint64_t capacity_;
-  bool error_ {};
+  uint64_t capacity_; // the total capacity of the stream
+  bool error_;  // whether the stream is error
+  bool closed_; // whether the stream is closed
+  uint64_t num_bytes_pushed_, num_bytes_popped_; // the total pushed / poped number of the stream
+  std::queue<std::string> buffer_;
+  std::queue<std::string_view> buffer_view_;
 };
 
 class Writer : public ByteStream
