@@ -8,8 +8,8 @@ ByteStream::ByteStream( uint64_t capacity )
     closed_( false ), 
     num_bytes_pushed_( 0 ), 
     num_bytes_popped_( 0 ),
-    buffer_(),       // 显式初始化队列
-    buffer_view_()  // 显式初始化视图队列
+    buffer_(),       
+    buffer_view_()  
 {}
 
 void Writer::push( string data )
@@ -18,13 +18,12 @@ void Writer::push( string data )
   if (len == 0) {
     return ;
   }
-  
-  buffer_.push(data.substr(0, len));
-  buffer_view_.emplace(buffer_.back().c_str(), len);
+  data.resize(len);
+  buffer_.push(std::move(data));
+  if (buffer_.size() == 1) {
+    buffer_view_ = {buffer_.back().c_str(), len};
+  }
   num_bytes_pushed_ += len;
-  /*std::cerr << "[PUSH] 尝试写入长度: " << data.size() 
-          << ", 实际写入长度: " << len 
-          << ", 当前 buffer_view 大小: " << buffer_view_.size() << "\n";*/
 }
 
 void Writer::close()
@@ -49,11 +48,11 @@ uint64_t Writer::bytes_pushed() const
 
 string_view Reader::peek() const
 {
-  if (buffer_view_.empty()) {
+  if (buffer_.empty()) {
     return {};
   }
   else {
-    return buffer_view_.front();
+    return buffer_view_;
   }
 }
 
@@ -61,16 +60,16 @@ void Reader::pop( uint64_t len )
 {
   while (!buffer_.empty() && len > 0) {
 
-    auto view_size = buffer_view_.front().size();
+    auto view_size = buffer_view_.size();
 
     if (len >= view_size) {
       len -= view_size;
       num_bytes_popped_ += view_size;
       buffer_.pop();
-      buffer_view_.pop();
+      if (buffer_.size() > 0) buffer_view_ = {buffer_.front().c_str(), buffer_.front().size()};
     }
     else {
-      buffer_view_.front().remove_prefix(len);
+      buffer_view_.remove_prefix(len);
       num_bytes_popped_ += len;
       len = 0;
     }

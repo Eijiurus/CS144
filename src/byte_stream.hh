@@ -30,7 +30,7 @@ protected:
   bool closed_; // whether the stream is closed
   uint64_t num_bytes_pushed_, num_bytes_popped_; // the total pushed / poped number of the stream
   std::queue<std::string> buffer_;
-  std::queue<std::string_view> buffer_view_;
+  std::string_view buffer_view_;
 };
 
 class Writer : public ByteStream
