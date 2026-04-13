@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 #include <iostream>
-#include <string_view>
 #include <queue>
+#include <string>
+#include <string_view>
 
 class Reader;
 class Writer;
@@ -25,12 +25,13 @@ public:
 
 protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
-  uint64_t capacity_; // the total capacity of the stream
-  bool error_;  // whether the stream is error
-  bool closed_; // whether the stream is closed
-  uint64_t num_bytes_pushed_, num_bytes_popped_; // the total pushed / poped number of the stream
-  std::queue<std::string> buffer_;
-  std::string_view buffer_view_;
+  uint64_t capacity_;     // the total capacity of the stream
+  bool error_ { false };  // whether the stream is error
+  bool closed_ { false }; // whether the stream is closed
+  uint64_t num_bytes_pushed_ { 0 };
+  uint64_t num_bytes_popped_ { 0 }; // the total pushed / poped number of the stream
+  std::queue<std::string> buffer_ {};
+  std::string_view buffer_view_ {};
 };
 
 class Writer : public ByteStream

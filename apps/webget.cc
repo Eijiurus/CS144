@@ -11,19 +11,19 @@ void get_URL( const string& host, const string& path )
 {
   TCPSocket sock;
   sock.connect( Address( host, "http" ) );
-  
+
   std::string request = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n\r\n";
   sock.write( request );
   sock.shutdown( SHUT_WR );
-  
+
   std::string response;
   sock.read( response );
-  while(!sock.eof()) {
+  while ( !sock.eof() ) {
     cout << response;
     response.clear();
     sock.read( response );
   }
-  
+
   cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
   sock.close();
 }

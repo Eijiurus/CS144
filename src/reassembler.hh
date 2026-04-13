@@ -1,7 +1,7 @@
 #pragma once
 
 #include "byte_stream.hh"
-
+#include <map>
 class Reassembler
 {
 public:
@@ -43,4 +43,12 @@ public:
 
 private:
   ByteStream output_;
+  std::map<uint64_t, std::string> pending_substrings_ {}; // the red part: in the bytestream with  unassembled
+  uint64_t total_size_ { 0x3f3f3f3f };
+  uint64_t initial_capacity_ = output_.writer().available_capacity();
+  uint64_t first_unassembled_index_ { 0 };
+
+  void handle_truncation( uint64_t& first_index, std::string& data, bool is_last_substring );
+  void merge_into_map( uint64_t first_index, std::string data );
+  void push_to_output();
 };

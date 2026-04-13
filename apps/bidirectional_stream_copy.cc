@@ -98,7 +98,7 @@ void bidirectional_stream_copy( Socket& socket, string_view peer_name )
       outbound.set_error();
       inbound.set_error();
     } );
-      
+
   // rule 4: read from inbound byte stream into stdout
   eventloop.add_rule(
     "read from inbound byte stream into stdout",
